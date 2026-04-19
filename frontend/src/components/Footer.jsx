@@ -29,12 +29,13 @@ const Footer = () => {
             </ul>
         </div>
 
-        <div>
+      </div>
+
+      <div>
             <hr />
-            <p className='py-5 '>&copy; 2026 Prescripto. All Rights Reserved.</p>
+            <p className='py-5 text-center'>&copy; 2026 Prescripto. All Rights Reserved.</p>
         </div>
 
-      </div>
     </div>
   );
 }
