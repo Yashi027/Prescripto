@@ -44,6 +44,31 @@ const Navbar = () => {
             </div>
             :<button onClick={() => navigate('/login')} className='bg-primary text-white px-8 py-3 rounded-full font-light hidden md:block cursor-pointer'>Create Account</button>
         }
+        <img src={assets.menu_icon} alt="Menu" className='w-6 md:hidden' onClick={() => setShowMenu(true)}/>
+        <div className={`${showMenu ? 'fixed w-full' : 'h-0 w-0'} md:hidden right-0 bottom-0 top-0 z-20 bg-white transition-all overflow-hidden`}>
+            <div className='flex items-center justify-between px-5 py-6'>
+                <img src={assets.logo} alt="" className='w-36'/>
+                <img src={assets.cross_icon} alt="" onClick={() => setShowMenu(false)} className='w-7'/>
+            </div>
+            <ul className='flex flex-col gap-4 mt-8 px-6 text-lg font-semibold text-gray-700'>
+            {[
+              ['/', 'HOME'],
+              ['/doctors', 'ALL DOCTORS'],
+              ['/about', 'ABOUT'],
+              ['/contact', 'CONTACT'],
+            ].map(([path, label], index) => (
+              <NavLink
+                key={index}
+                to={path}
+                onClick={() => setShowMenu(false)}
+              >
+                <li className='bg-white shadow-md px-5 py-4 rounded-xl hover:bg-primary hover:text-white transition-all duration-300'>
+                  {label}
+                </li>
+              </NavLink>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
