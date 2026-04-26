@@ -6,7 +6,7 @@ const doctorSchema = new mongoose.Schema({
         required: true
     },
     email:{
-        type: email,
+        type: String,
         required: true,
         unique: true
     },
@@ -26,7 +26,7 @@ const doctorSchema = new mongoose.Schema({
         required: true
     },
     experience:{
-        type: Number,
+        type: String,
         required: true
     },
     about:{
@@ -35,7 +35,7 @@ const doctorSchema = new mongoose.Schema({
     },
     available:{
         type: Boolean,
-        required: true
+        default: true
     },
     fees:{
         type: Number,
@@ -58,4 +58,4 @@ const doctorSchema = new mongoose.Schema({
 
 const Doctor = mongoose.model('Doctor',doctorSchema)
 
-export default doctor;
+export default Doctor;
