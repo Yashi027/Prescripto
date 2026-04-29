@@ -1,9 +1,32 @@
 import React, { useContext, useState } from "react";
 import { AdminContext } from "../context/AdminContext";
+import axios from 'axios';
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [state, setState] = useState("Admin");
+  const [email,setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const { setAToken, backendUrl } = useContext(AdminContext);
+
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      if(state==="Admin"){
+        const {data} = await axios.post(backendUrl+'/api/admin/login',{email,password})
+        if(data.success){
+          localStorage.setItem('aToken',data.token)
+          setAToken(data.token)
+        }else{
+          toast.error(data.message)
+        }
+      }else{
+
+      }
+    } catch (error) {
+      console.log("Error", error)
+    }
+  }
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-cyan-50 overflow-hidden">
@@ -14,7 +37,7 @@ const Login = () => {
 
       <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-sky-200 rounded-full opacity-20 blur-[100px]"></div>
 
-      <form className="relative z-10 w-full max-w-md px-5">
+      <form onSubmit={onSubmitHandler} className="relative z-10 w-full max-w-md px-5">
         <div className="bg-white/70 backdrop-blur-xl border border-white/50 shadow-2xl rounded-3xl p-8">
 
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-1">
@@ -31,6 +54,8 @@ const Login = () => {
             <input
               type="email"
               placeholder="Enter your email"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
               className="w-full mt-2 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-300 outline-none"
               required
             />
@@ -43,6 +68,8 @@ const Login = () => {
             <input
               type="password"
               placeholder="Enter password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
               className="w-full mt-2 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-300 outline-none"
               required
             />
