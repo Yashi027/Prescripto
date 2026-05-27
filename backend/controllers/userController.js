@@ -90,7 +90,8 @@ const updateProfile = async (req,res) => {
 
 const bookAppointment = async (req,res) => {
     try {
-        const {userId, docId, slotDate, slotTime} = req.body
+        const userId = req.userId
+        const { docId, slotDate, slotTime} = req.body
 
         const docData = await Doctor.findById(docId).select('-password')
         if(!docData.available){
