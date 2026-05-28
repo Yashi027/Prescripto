@@ -144,4 +144,28 @@ const listAppointment = async (req,res) => {
         res.json({success: false,message: error.message})
     }
 }
-export {registerUser, loginUser, getProfile, updateProfile, bookAppointment, listAppointment}
+
+const cancelAppointment = async (req,res) => {
+    try {
+        const userId = req.userId;
+        const {appointmentId} = req.body
+        const appointmentData = await Appointment.findById(appointmentId)
+
+        if(appointmentData.userId != userId)
+            return res.json({success: false, message:"Unauthorised Action"})
+
+        await Appointment.findByIdAndUpdate(appointmentId, {cancelled: true});
+
+        const {docId,slotDate, slotTime} = appointmentData
+        const doctorData = await Doctor.findById(docId);
+        let slots_booked = doctorData.slots_booked
+        slots_booked[slotDate] = slots_booked[slotDate].filter(e => e!==slotTime)
+
+        await Doctor.findByIdAndUpdate(docId,{slots_booked})
+        res.json({success:true, message: "Appointment Cancelled"});
+    } catch (error) {
+        console.log(error)
+        res.json({success: false,message: error.message})
+    }
+}
+export {registerUser, loginUser, getProfile, updateProfile, bookAppointment, listAppointment,cancelAppointment}

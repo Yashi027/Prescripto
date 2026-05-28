@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import axios from 'axios';
 
 const MyAppointments = () => {
-  const { backendUrl, token } = useContext(AppContext);
+  const { backendUrl, token, getDoctorsData } = useContext(AppContext);
 
   const [appointments, setAppointments] = useState([])
 
@@ -20,7 +20,22 @@ const MyAppointments = () => {
       const {data} = await axios.get(backendUrl+'/api/user/appointments',{headers:{token}})
       if(data.success){
         setAppointments(data.appointments.reverse())
-        console.log(appointments)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
+
+  const cancelApppointment = async (appointmentId) => {
+    try {
+      const {data} = await axios.post(backendUrl+'/api/user/cancel-appointment',{appointmentId},{headers:{token}})
+      if(data.success){
+        toast.success(data.message)
+        getUserAppointments()
+        getDoctorsData()
+      }else{
+        toast.error(data.message)
       }
     } catch (error) {
       console.log(error)
@@ -79,13 +94,17 @@ const MyAppointments = () => {
               </div>
 
               <div className="flex flex-col gap-3 w-full md:w-48">
-                <button className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition">
+                {!item.cancelled && <button className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition">
                   Pay Online
-                </button>
+                </button>}
 
-                <button className="w-full border border-red-500 text-red-500 py-2.5 rounded-lg font-medium hover:bg-red-50 transition">
+                {!item.cancelled && <button 
+                onClick={() => cancelApppointment(item._id)}
+                className="w-full border border-red-500 text-red-500 py-2.5 rounded-lg font-medium hover:bg-red-50 transition">
                   Cancel Appointment
-                </button>
+                </button>}
+
+                {item.cancelled && <button className="w-full border border-red-500 text-red-500 py-2.5 rounded-lg font-medium hover:bg-red-50 transition ">Appointment Cancelled</button>}
               </div>
             </div>
           </div>
