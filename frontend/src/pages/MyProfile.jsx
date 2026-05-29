@@ -6,28 +6,28 @@ import { toast } from 'react-toastify';
 
 const MyProfile = () => {
 
-  const {userData, setUserData, token, backendUrl, loadUserProfileData} = useContext(AppContext)
+  const { userData, setUserData, token, backendUrl, loadUserProfileData } = useContext(AppContext)
 
   const [isEdit, setIsEdit] = useState(false);
-  const [image,setImage] = useState(false);
+  const [image, setImage] = useState(false);
 
-  const updateUserProfileData = async() => {
+  const updateUserProfileData = async () => {
     try {
       const formData = new FormData()
-      formData.append('name',userData.name)
-      formData.append('phone',userData.phone)
-      formData.append('address',JSON.stringify(userData.address))
-      formData.append('gender',userData.gender)
-      formData.append('dob',userData.dob)
-      image && formData.append('image',image)
+      formData.append('name', userData.name)
+      formData.append('phone', userData.phone)
+      formData.append('address', JSON.stringify(userData.address))
+      formData.append('gender', userData.gender)
+      formData.append('dob', userData.dob)
+      image && formData.append('image', image)
 
-      const {data} = await axios.post(backendUrl+'/api/user/update-profile',formData,{headers:{token}})
-      if(data.success){
+      const { data } = await axios.post(backendUrl + '/api/user/update-profile', formData, { headers: { token } })
+      if (data.success) {
         toast.success(data.message)
         await loadUserProfileData()
         setIsEdit(false)
         setImage(false)
-      }else{
+      } else {
         toast.error(data.message)
       }
 
@@ -46,18 +46,18 @@ const MyProfile = () => {
 
           {
             isEdit
-            ? <label htmlFor="image">
-              <div>
-                <img src={image ? URL.createObjectURL(image): userData.image} alt="" />
-                <img src={image ? '': assets.upload_icon} alt="" />
-              </div>
-              <input onChange={(e) => setImage(e.target.files[0])} type="file" id='image' hidden/>
-            </label>
-            : <img
-            src={userData.image}
-            alt="Profile"
-            className="w-36 h-36 rounded-full object-cover border-4 border-blue-100 shadow-md"
-          />
+              ? <label htmlFor="image">
+                <div>
+                  <img src={image ? URL.createObjectURL(image) : userData.image} alt="" />
+                  <img src={image ? '' : assets.upload_icon} alt="" />
+                </div>
+                <input onChange={(e) => setImage(e.target.files[0])} type="file" id='image' hidden />
+              </label>
+              : <img
+                src={userData.image}
+                alt="Profile"
+                className="w-36 h-36 rounded-full object-cover border-4 border-blue-100 shadow-md"
+              />
           }
 
           <div className="flex-1 text-center md:text-left">
@@ -171,13 +171,50 @@ const MyProfile = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-gray-700">
 
             <div>
-              <p className="font-medium">Gender:</p>
-              <p className="text-gray-600">{userData.gender}</p>
+              <p className="font-medium mb-1">Gender:</p>
+
+              {
+                isEdit ? (
+                  <select
+                    value={userData.gender}
+                    onChange={(e) =>
+                      setUserData(prev => ({
+                        ...prev,
+                        gender: e.target.value
+                      }))
+                    }
+                    className="border rounded-lg px-3 py-2 w-full outline-none focus:ring-2 focus:ring-blue-300"
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                ) : (
+                  <p className="text-gray-600">{userData.gender}</p>
+                )
+              }
             </div>
 
             <div>
-              <p className="font-medium">Date of Birth:</p>
-              <p className="text-gray-600">{userData.dob}</p>
+              <p className="font-medium mb-1">Date of Birth:</p>
+
+              {
+                isEdit ? (
+                  <input
+                    type="date"
+                    value={userData.dob}
+                    onChange={(e) =>
+                      setUserData(prev => ({
+                        ...prev,
+                        dob: e.target.value
+                      }))
+                    }
+                    className="border rounded-lg px-3 py-2 w-full outline-none focus:ring-2 focus:ring-blue-300"
+                  />
+                ) : (
+                  <p className="text-gray-600">{userData.dob}</p>
+                )
+              }
             </div>
 
           </div>
