@@ -6,7 +6,7 @@ import { AppContext } from '../../context/AppContext';
 const Dashboard = () => {
 
   const { getDashData, aToken, dashData, cancelAppointment } = useContext(AdminContext);
-  const {slotDateFormat} = useContext(AppContext)
+  const { slotDateFormat } = useContext(AppContext)
 
   useEffect(() => {
     if (aToken) {
@@ -119,18 +119,15 @@ const Dashboard = () => {
               </div>
 
               <div className="self-start sm:self-center">
-                {item.cancelled ? (
-                  <p className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg border border-red-300 text-red-500 bg-red-50">
-                    Cancelled
-                  </p>
-                ) : (
-                  <button
-                    onClick={() => cancelAppointment(item._id)}
-                    className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg border border-red-300 text-red-500 hover:bg-red-50 transition-all"
-                  >
-                    Cancel
-                  </button>
-                )}
+                {item.cancelled
+                  ? <p className='px-4 py-2 text-sm rounded-lg border border-red-300 text-red-500'>Cancelled</p>
+                  : item.completed
+                    ? <p className='px-4 py-2 text-sm rounded-lg border border-green-300 text-green-500'>Completed</p>
+                    : <div className='flex items-center gap-2'>
+                      <button onClick={() => cancelAppointment(item._id)} className='px-4 py-2 text-sm rounded-lg border border-red-300 text-red-500 hover:bg-red-50 transition'>
+                        Cancel
+                      </button>
+                    </div>}
               </div>
             </div>
           ))}

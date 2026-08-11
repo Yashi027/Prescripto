@@ -120,11 +120,13 @@ const AllAppointments = () => {
 
               {item.cancelled
                 ? <p className='px-4 py-2 text-sm rounded-lg border border-red-300 text-red-500'>Cancelled</p>
-                : <div className='flex items-center gap-2'>
-                  <button onClick={() => cancelAppointment(item._id)} className='px-4 py-2 text-sm rounded-lg border border-red-300 text-red-500 hover:bg-red-50 transition'>
-                    Cancel
-                  </button>
-                </div>}
+                : item.completed
+                  ? <p className='px-4 py-2 text-sm rounded-lg border border-green-300 text-green-500'>Completed</p>
+                  : <div className='flex items-center gap-2'>
+                    <button onClick={() => cancelAppointment(item._id)} className='px-4 py-2 text-sm rounded-lg border border-red-300 text-red-500 hover:bg-red-50 transition'>
+                      Cancel
+                    </button>
+                  </div>}
 
             </div>
           ))}

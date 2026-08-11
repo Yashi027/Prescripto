@@ -132,24 +132,26 @@ const MyAppointments = () => {
 
               <div className="flex flex-col gap-3 w-full md:w-48">
                 {
-                  !item.cancelled && item.payment && <button
+                  !item.cancelled && item.payment && !item.isCompleted && <button
                     className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition">
                     Paid
                   </button>
                 }
-                {!item.cancelled && !item.payment && <button
+                {!item.cancelled && !item.payment && !item.isCompleted && <button
                   onClick={() => appointmentRazorpay(item._id)}
                   className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition">
                   Pay Online
                 </button>}
 
-                {!item.cancelled && <button
+                {!item.cancelled && !item.isCompleted && <button
                   onClick={() => cancelApppointment(item._id)}
                   className="w-full border border-red-500 text-red-500 py-2.5 rounded-lg font-medium hover:bg-red-50 transition">
                   Cancel Appointment
                 </button>}
 
-                {item.cancelled && <button className="w-full border border-red-500 text-red-500 py-2.5 rounded-lg font-medium hover:bg-red-50 transition ">Appointment Cancelled</button>}
+                {item.cancelled && !item.isCompleted && <button className="w-full border border-red-500 text-red-500 py-2.5 rounded-lg font-medium hover:bg-red-50 transition ">Appointment Cancelled</button>}
+
+                {item.isCompleted && <button className="w-full border border-green-500 text-green-500 py-2.5 rounded-lg font-medium hover:bg-red-50 transition ">Appointment Completed</button>}
               </div>
             </div>
           </div>

@@ -1,11 +1,34 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { DoctorContext } from '../../context/DoctorContext';
 import { AppContext } from '../../context/AppContext';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const DoctorProfile = () => {
 
-  const { dToken, profileData, setProfileData, getProfileData } = useContext(DoctorContext)
-  const { currency, backendUrl } = useContext(AppContext)
+  const { dToken, profileData, setProfileData, getProfileData, backendUrl } = useContext(DoctorContext)
+  const { currency} = useContext(AppContext)
+  const [isEdit, setIsEdit] = useState(false);
+
+  const updateProfile = async () => {
+    try {
+      const updateData = {
+        address: profileData.address,
+        fees: profileData.fees,
+        available: profileData.available
+      }
+      const {data} = await axios.post(backendUrl+'/api/doctor/update-profile',updateData,{headers:{dToken}})
+      if(data.success){
+        toast.success(data.message)
+        setIsEdit(false)
+        getProfileData()
+      }else{
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
 
   useEffect(() => {
     if (dToken) {
@@ -58,7 +81,7 @@ const DoctorProfile = () => {
                   Appointment Fee:
                 </span>{' '}
                 <span className="text-green-600 font-bold">
-                  {currency}{profileData.fees}
+                  {currency}{isEdit ? <input type="number" onChange={(e) => setProfileData(prev => ({ ...prev, fees: e.target.value }))} value={profileData.fees} /> : profileData.fees}
                 </span>
               </p>
             </div>
@@ -68,7 +91,7 @@ const DoctorProfile = () => {
                 Address
               </h3>
               <p className="text-gray-600">
-                {profileData.address.line1}
+                {isEdit ? <input type="text" onChange={(e) => setProfileData(prev => ({ ...prev, address: { ...prev.address, line1: e.target.value } }))} value={profileData.address.line1} /> : profileData.address.line1}
               </p>
             </div>
 
@@ -78,17 +101,26 @@ const DoctorProfile = () => {
                 checked={profileData.available}
                 readOnly
                 className="w-5 h-5 accent-blue-600 cursor-pointer"
+                onChange={() => isEdit && setProfileData(prev => ({ ...prev, available: !prev.available }))}
               />
               <label className="text-gray-700 font-medium">
                 Available for Appointments
               </label>
             </div>
 
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <button className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300">
-                Edit Profile
-              </button>
-            </div>
+            {
+              isEdit
+                ? <div className="mt-8 flex flex-col sm:flex-row gap-4">
+                  <button className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300" onClick={updateProfile}>
+                    Save Profile
+                  </button>
+                </div>
+                : <div className="mt-8 flex flex-col sm:flex-row gap-4">
+                  <button className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300" onClick={() => setIsEdit(true)}>
+                    Edit Profile
+                  </button>
+                </div>
+            }
 
           </div>
         </div>
